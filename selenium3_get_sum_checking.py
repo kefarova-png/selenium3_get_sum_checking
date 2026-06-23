@@ -53,25 +53,27 @@ time.sleep(0.1)
 driver.find_element(By.XPATH,"//*[@id='gettotal']/button").click()
 
 #  Проверяем соответствие отображаемого текста ожидаемому
+fact_text = None  #  если отображаемый в превью текст не найдется
 try:
     fact_text = driver.find_element(By.XPATH,"//p[@id='message']").text
 except:
-    fact_text = None  #  если отображаемый в превью текст не нашёлся
-print(fact_text, "\n", text_value, sep='')
-time.sleep(2)
+    pass
+print(f"\nФактический текст:\t'{fact_text}' \nОжидаемый текст:\t'{text_value}'", sep='')
+time.sleep(1)
 assert fact_text == text_value, 'Отображаемый в превью текст должен совпадать с введенным'
 print("Превью текста отображается корректно")
 
 #  Проверяем соответствие отображаемой суммы ожидаемой
 expected_sum = float(first_value + second_value)
+fact_sum = None  #  Если отображаемая в превью сумма не найдется
 try:
     fact_sum = float(driver.find_element(By.XPATH,"//p[@id='addmessage']").text)
 except:
     fact_sum = "Not_a_Number"  #  если отображается НЕчисло
-print(fact_sum, '\n', expected_sum, sep='')
-time.sleep(2)
+print(f"\nФактическая сумма:\t'{fact_sum}', \nОжидаемая сумма:\t'{expected_sum}'", sep='')
+time.sleep(1)
 assert fact_sum == expected_sum, 'Отображаемая сумма должна совпадать с вычисленной'
 print("Результат суммирования отображается корректно")
-time.sleep(2)
+time.sleep(3)
 
 driver.close()  #  Закрываем браузер
