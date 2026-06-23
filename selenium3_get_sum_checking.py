@@ -20,6 +20,12 @@ driver.get(base_url)
 driver.set_window_size(920, 1080)
 time.sleep(5)
 
+#  Найдем поле ввода текста и введем текст
+text_field = driver.find_element(By.XPATH, "//*[@id='user-message']")
+text_value = 'A text for a test'
+text_field.send_keys(text_value)
+time.sleep(5)
+
 #  Найдем поля ввода слагаемых и введём в каждое по одному числу
 first_field = driver.find_element(By.XPATH, "//input[@id='sum1']")
 second_field = driver.find_element(By.XPATH, "//input[@id='sum2']")
@@ -27,9 +33,9 @@ first_value = 100
 second_value = 200
 first_field.send_keys(first_value)
 second_field.send_keys(second_value)
-time.sleep(2)
+time.sleep(5)
 
-#  Находим и жмём [Allow all], чтобы визуально не мешало(сь)
+#  Находим и жмём всплывшее [Allow all], чтобы не мешало(сь)
 try:
     driver.find_element(
         By.XPATH,
@@ -37,9 +43,24 @@ try:
     ).click()
 except:
     pass
+time.sleep(2)
+
+#  Находим и жмём [Get Checked Value]
+driver.find_element(By.XPATH,"//button[@id='showInput']").click()
+time.sleep(0.1)
 
 #  Находим и жмём [Get Sum]
 driver.find_element(By.XPATH,"//*[@id='gettotal']/button").click()
+
+#  Проверяем соответствие отображаемого текста ожидаемому
+try:
+    fact_text = driver.find_element(By.XPATH,"//p[@id='message']").text
+except:
+    fact_text = None  #  если отображаемый в превью текст не нашёлся
+print(fact_text, "\n", text_value, sep='')
+time.sleep(2)
+assert fact_text == text_value, 'Отображаемый в превью текст должен совпадать с введенным'
+print("Превью текста отображается корректно")
 
 #  Проверяем соответствие отображаемой суммы ожидаемой
 expected_sum = float(first_value + second_value)
@@ -47,9 +68,10 @@ try:
     fact_sum = float(driver.find_element(By.XPATH,"//p[@id='addmessage']").text)
 except:
     fact_sum = "Not_a_Number"  #  если отображается НЕчисло
+print(fact_sum, '\n', expected_sum, sep='')
 time.sleep(2)
-print(fact_sum, expected_sum)
 assert fact_sum == expected_sum, 'Отображаемая сумма должна совпадать с вычисленной'
 print("Результат суммирования отображается корректно")
+time.sleep(2)
 
 driver.close()  #  Закрываем браузер
